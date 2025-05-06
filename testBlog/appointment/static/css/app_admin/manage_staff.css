@@ -1,0 +1,9 @@
+.staff-form-wrapper{
+    margin: 0 auto;
+    width: 40%;
+    text-align: center;
+}
+
+.staff-form-wrapper small{
+    color: gray;
+}

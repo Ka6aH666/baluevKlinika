@@ -1,0 +1,63 @@
+.fc-scroller {
+    overflow: hidden !important;
+}
+
+@media (max-width: 450px) {
+    .fc-daygrid-day-events {
+        display: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 0 !important;
+        height: 0 !important;
+    }
+
+    .fc, .fc-button {
+        padding: .3em .45em !important;
+    }
+}
+.djangoAppt_main-container {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
+    background-color: #ffffff; /* Белый фон для контента */
+    border-radius: 10px; /* Закругленные углы */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Тень для эффекта поднятости */
+}
+
+/* Заголовок */
+h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Описание страницы */
+.page-description {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Календарь */
+.djangoAppt_appointment-calendar {
+    padding: 20px;
+    background-color: #f8f9fa; /* Светло-серый фон */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Слот для записи */
+.djangoAppt_slot {
+    padding: 20px;
+    padding-bottom: 0px;
+    background-color: #ffffff; /* Белый фон */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#staff_id {
+    background: linear-gradient(103deg, #ff7e5f, #ff4e50); /* По умолчанию красный */
+}
+
+#staff_id:valid {
+    background: linear-gradient(103deg, #42e695, #3bb78f); /* Если выбран id, цвет зелёный */
+}

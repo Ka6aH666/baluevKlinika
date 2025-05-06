@@ -1,0 +1,47 @@
+{% extends 'mainController/layout.html'%}
+{% load i18n %}
+{% load static %}
+{% block title %} Чат {% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+
+    <div class="card">
+        <div class="card-header text-white text-center" style="background-color: #0e2238;">
+            <div id="online_status"></div>
+            <h1 class="text-center">Чат с {{ other_user.get_full_name }}</h1>
+        </div>
+        <div id="chat_container" class="card-body overflow-auto" style="height: 400px;">
+            <ul id="chat_messages" class="list-unstyled">
+                {% for message in chat_messages %}
+                {% include 'partials/chat_message.html' %}
+                {% endfor %}
+            </ul>
+
+        </div>
+        <div class="card-footer">
+            <form id="chat_message_form" class="w-full"
+                  hx-ext="ws"
+                  ws-connect="/ws/chat/{{ chatroom_name }}/"
+                  ws-send="this">
+                {% csrf_token %}
+                {{ form }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block customJS %}
+<script>
+    function scrollToBottom(time=0) {
+    setTimeout(function() {
+        const container = document.getElementById('chat_container');
+        container.scrollTop = container.scrollHeight;
+    }, time);
+}
+    scrollToBottom()
+    document.getElementById("chat_message_form").addEventListener("htmx:wsAfterSend", function() {
+        this.reset();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'mainController/layout.html'%}
+{% load i18n %}
+{% load static %}
+{% block customCSS %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/thank_you.css' %}"/>
+{% endblock %}
+
+{% block body %}
+
+<h1 class="thank-you-title">{% trans "Confirm" %}</h1>
+<p class="thank-you-message">{% trans "Almost ready, please check the details" %}.</p>
+<p class="appointment-details-title">{% trans "Appointment details" %}:</p>
+<ul class="appointment-details">
+    <li>{% trans 'Service' %}: {{ appointment_request.get_service_name }}</li>
+    <li>{% trans 'Appointment Date' %}: {{ appointment_request.get_ar_date }}</li>
+    <li>{% trans 'Appointment Time' %}: {{ appointment_request.get_start_time }}</li>
+    <li>{% trans 'Duration' %}: {{ appointment_request.get_service_duration }}</li>
+</ul>
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-dismissible {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %}"
+     role="alert">{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+<div class="bottom">
+    <button class="btn btn-warning" style="margin-right:10px">
+        <a href="{% url 'confirm_appt' appointment_request.id %}"> Подтвердить </a>
+    </button>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,22 @@
+services:
+  appointment-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+  nginx:
+    container_name: nginx-web
+    image: nginx:alpine
+    depends_on:
+      - appointment-service
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - ./nginx/conf-local.d/:/etc/nginx/conf.d
+      - ./testBlog/staticfiles/:/app/staticfiles/
+      - ./testBlog/media/:/app/media/

@@ -1,0 +1,47 @@
+.content {
+    display: grid;
+    grid-template-columns: 1fr; /* allows the table to occupy 25% with the next line */
+    grid-gap: 20px;
+    margin-left: 20px;
+}
+
+.client-table {
+    width: 40%; /* Occupies 25% of the screen width */
+}
+
+.head-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start; /* Vertically align items */
+    margin-bottom: 20px; /* Add spacing below the header */
+}
+
+
+.header-item {
+    display: flex;
+    width: 120px;
+    background-color: #7287a0; /* Light gray background */
+    padding: 10px 15px;
+    border-radius: 5px; /* Rounded corners */
+}
+
+.count {
+    font-weight: bold;
+    text-align: center;     /* Make the count stand out */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #7a9bae; /* Light gray header background */
+}

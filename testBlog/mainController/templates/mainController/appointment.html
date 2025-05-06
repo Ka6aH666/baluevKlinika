@@ -1,0 +1,24 @@
+{% extends 'mainController/layout.html'%}
+{% load static %}
+{% block body %}
+    <h1>Запись</h1>
+    <div class="appoint">
+         <form method="POST">
+          {% csrf_token %}
+            <input type="text" name="name" placeholder="Имя" class="form-control"><br>
+            <input type="text" name="surname" placeholder="Фамилия" class="form-control"><br>
+            <input type="date" name="date" class="form-control"><br>
+            <label>Время:</label>
+                {% for time_slot in time_slots %}
+                    <select class="time-slot-button" name="time_slot">
+                        <option value="{{ time_slot.id }}">{{ time_slot }}</option>
+                    </select>
+                {% endfor %}
+            <br> <br>
+          <button type="submit" class="btn btn-warning">Записаться</button>
+        </form>
+    </div>
+
+
+
+{% endblock %}

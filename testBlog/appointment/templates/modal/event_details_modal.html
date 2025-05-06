@@ -1,0 +1,62 @@
+{% load i18n %}
+<!-- Event Details Modal -->
+<style>
+    .button-container {
+    display: flex;
+    justify-content: space-between; /* Равномерное распределение */
+    align-items: center;
+    gap: 20px; /* Отступы между кнопками */
+    padding: 10px; /* Немного отступов вокруг */
+}
+    .button-container a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; /* Размер кнопки */
+    height: 32px;
+ /* Фон кнопки */
+    border-radius: 50%; /* Делаем кнопки круглыми */
+}
+
+.button-container i {
+    color: white;
+    font-size: 16px;
+}
+</style>
+
+<div class="modal fade modal-xl" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventModalLabel">Детали услуги</h5>
+                <div class="button-container">
+                    <a href="#" onclick="toggleEditMode()" id="eventEditBtn">
+                        <i class="fa-solid fa-pen" style="color:white;"></i>
+                    </a>
+                    <a href="#" onclick="deleteAppointment()" id="eventDeleteBtn">
+                        <i class="fa-solid fa-trash" style="color:white;"></i>
+                    </a>
+                    <a href="#" onclick="closeModal()" data-dismiss="modal">
+                        <i class="fa-solid fa-x" style="color:white;"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body" id="eventModalBody">
+                <!-- Event details be populated here -->
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="eventGoBtn"
+                        onclick="goToEvent()">{% trans 'Begin' %}
+                </button>
+                <button type="button" class="btn btn-primary" id="eventSubmitBtn" style="display: none;"
+                        onclick="submitChanges()">{% trans 'Submit' %}
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+{% extends 'mainController/layout.html'%}
+{% load static %}
+{% block title %} Календарь {% endblock %}
+{% block body %}
+<div class="container mt-4">
+    <h2>Настройки отображаемого диапазона календаря</h2>
+    <form method="post" class="card p-4 shadow">
+        {% csrf_token %}
+        <p><strong>Дата начала:</strong> <span id="start_date">{{ start_date }}</span></p>
+        <div class="mb-3">
+            <label class="form-label">Длительность:</label>
+            {{ form.duration }}
+        </div>
+        <p><strong>Дата окончания:</strong> <span id="end_date">{{ end_date }}</span></p>
+        <button type="submit" class="btn btn-success">Сохранить</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const startDateInput = document.querySelector("#id_start_date");
+        console.log(startDateInput, "startDateInput")
+        const durationSelect = document.querySelector("#id_duration");
+        const endDateSpan = document.querySelector("#end_date");
+
+        function updateEndDate() {
+            const startDate = new Date(startDateInput.value);
+            const duration = parseInt(durationSelect.value, 10);
+            const options = { day: "numeric", month: "long", year: "numeric" };
+            if (!isNaN(startDate.getTime()) && duration) {
+                startDate.setDate(startDate.getDate() + duration);
+                endDateSpan.textContent = startDate.toLocaleDateString("ru-RU", options); // Формат YYYY-MM-DD
+            }
+        }
+
+        startDateInput.addEventListener("change", updateEndDate);
+        durationSelect.addEventListener("change", updateEndDate);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'mainController/layout.html'%}
+{% block body %}
+<h1>Календарь доступности</h1>
+<form method="POST">
+  {% csrf_token %}
+  <table>
+    <thead>
+      <tr>
+        <th>День</th>
+        {% for slot in time_slots %}
+        <th>{{ slot.start_time}} - {{ slot.end_time }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for day in days %}
+      <tr>
+        <td>{{ day|add:1|date:"l" }}</td>
+        {% for slot in time_slots %}
+        {% if slot.day_of_week == day %}
+        <td>
+          <input type="checkbox" name="slot_{{ day }}_{{ slot.id }}" id="slot_{{ day }}_{{ slot.id }}" {% if not slot.is_available %}checked{% endif %}>
+          <label for="slot_{{ day }}_{{ slot.id }}">
+            {% if slot.is_available %}Свободно{% else %}Занято{% endif %}
+          </label>
+        </td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit">Сохранить изменения</button>
+</form>
+{% endblock %}

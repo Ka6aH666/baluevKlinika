@@ -1,0 +1,47 @@
+{% extends 'mainController/layout.html'%}
+{% load i18n %}
+{% load static %}
+{% block title %} Клиенты {% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/app_admin/clients.css' %}"/>
+{% endblock %}
+{% block body %}
+<div class="content">
+    <div class="head-info">
+        <div class="header-item">
+            <span>{% trans 'Customers' %} </span>
+            <span class="count"> {{ clients|length }}</span>
+        </div>
+        <div class="header-item">
+            <span>{% trans 'Appointments' %} </span>
+            <span class="count"> {{ appt|length }}</span>
+        </div>
+    </div>
+
+    <div class="client-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>{% trans 'First Name' %}</th>
+                    <th>{% trans 'Last Name' %}</th>
+                    <th>{% trans 'Contacts' %}</th>
+                    <th>{% trans 'VK' %}</th>
+                    <th>{% trans 'Telegram' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                    <tr>
+                        <td>{{ client.first_name }}</td>
+                        <td>{{ client.last_name }}</td>
+                        <td>{{ client.phone_number|default:'Не укзанао' }}</td>
+                        <td>{{ client.social_link_tg|default:'Не укзанао' }}</td>
+                        <td>{{ client.social_link_vk|default:'Не укзанао' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

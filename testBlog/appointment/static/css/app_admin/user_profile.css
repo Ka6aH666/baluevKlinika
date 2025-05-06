@@ -1,0 +1,187 @@
+.profile-container {
+    display: flex;
+    flex-wrap: wrap;  /* Разрешаем перенос элементов */
+    justify-content: space-evenly; /* Равномерное распределение */
+    gap: 20px; /* Отступ между секциями */
+    margin: 5px auto;
+    padding: 10px;
+    max-width: 1450px; /* Опционально для центрирования */
+}
+
+.profile-section {
+    flex: 1 1 calc(50% - 20px); /* 50% ширины с учётом gap */
+    max-width: calc(50% - 20px); /* Максимальная ширина для двух колонок */
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    margin: 0 auto 30px auto;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+    .profile-section {
+        flex: 1 1 100%; /* На узких экранах 1 колонка */
+        max-width: 100%;
+    }
+}
+
+.service-container {
+    margin: 5px auto;
+    border-radius: 8px;
+}
+.profile-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-content {
+    margin-top: 20px;
+}
+
+
+.profile-section i{
+    font-size: 1.25rem;
+}
+
+.profile-section h2 {
+    margin-bottom: 20px; /* Space between the title and content */
+}
+
+.profile-section p {
+    line-height: 1.5em; /* Enhanced line spacing for readability */
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    overflow: hidden; /* To respect border-radius in tables */
+}
+
+table th, table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+
+/* Adding gradient backgrounds for a more vibrant look */
+.profile-container {
+    /*background-image: linear-gradient(to bottom right, #fff, #f7f9fc);*/
+}
+
+/* Additional hover effect for the sections */
+.profile-section:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Elegant & smooth transitions for all elements */
+* {
+    transition: all 0.3s ease-out;
+}
+
+/* Elevate the table headers for a layered appearance */
+table th {
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* Subtle hover effects for table rows */
+table tbody tr {
+    position: relative;
+    z-index: 1;
+    transform: scale(1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+table tbody tr:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Animate the appearance of the profile sections for a smooth load-in effect */
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Consider adding this for a smoother feel when scrolling */
+body {
+    scroll-behavior: smooth;
+}
+
+
+/* Responsive design for tablets and mobile devices */
+@media screen and (max-width: 768px) {
+    .profile-container {
+        margin: 20px 10px;
+        padding: 15px;
+    }
+
+    .profile-section {
+        padding: 15px;
+    }
+
+    .section-content-button {
+        top: 10px;
+        right: 10px;
+    }
+
+    table th, table td {
+        padding: 10px;
+    }
+
+    .profile-section h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .profile-section p {
+        font-size: 14px;
+    }
+
+    .responsive-table-container {
+        overflow-x: auto; /* Allows horizontal scrolling */
+        -webkit-overflow-scrolling: touch; /* Smooth scroll for touch devices */
+    }
+
+    /* Optional: Add a shadow on the right to indicate more content */
+    .responsive-table-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 10px;
+        height: 100%;
+        box-shadow: -5px 0 10px rgba(0, 0, 0, 0.05);
+        pointer-events: none; /* Ensures it doesn't interfere with other interactions */
+    }
+}
