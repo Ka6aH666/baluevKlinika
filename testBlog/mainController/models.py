@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-
+# привет
 
 class Meet(models.Model):
     """Модель записи."""
