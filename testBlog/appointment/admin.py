@@ -23,7 +23,6 @@ class ConfigAdmin(admin.ModelAdmin):
         "appointment_buffer_time",
     )
 
-
 @admin.register(StaffMember)
 class StaffMemberAdmin(admin.ModelAdmin):
     form = StaffMemberForm
