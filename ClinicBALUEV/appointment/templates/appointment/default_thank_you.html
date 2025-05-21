@@ -1,0 +1,139 @@
+{% extends 'mainController/layout.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %} Благодарность {% endblock %}
+
+{% block customCSS %}
+<style>
+    body {
+        background-color: #DFFAFF;
+    }
+
+    .thank-you-wrapper {
+        max-width: 800px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .thank-you-content {
+        padding: 40px 30px;
+        text-align: center;
+    }
+
+    .thank-you-title {
+        font-size: 2.5rem;
+        color: #fff;
+        background: linear-gradient(135deg, #0084FF, #005FCC);
+        padding: 20px;
+        border-radius: 16px 16px 0 0;
+        margin: -40px -30px 20px -30px;
+        animation: slideDown 1s ease-in-out;
+    }
+
+    .thank-you-message {
+        font-size: 1.3rem;
+        color: #333;
+        margin-bottom: 25px;
+        animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .appointment-details-title {
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        color: #005FCC;
+    }
+
+    .appointment-details {
+        list-style: none;
+        padding: 0;
+        margin: 0 auto 20px;
+        max-width: 400px;
+        text-align: left;
+    }
+
+    .appointment-details li {
+        padding: 10px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        color: #333;
+        font-size: 1rem;
+    }
+
+    .appointment-details li:last-child {
+        border-bottom: none;
+    }
+
+    .alert {
+        margin-top: 20px;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .alert-danger {
+        background-color: #F8D7DA;
+        color: #721C24;
+    }
+
+    .alert-success {
+        background-color: #D4EDDA;
+        color: #155724;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+        .thank-you-content {
+            padding: 30px 20px;
+        }
+
+        .thank-you-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<section class="thank-you-wrapper">
+    <div class="thank-you-content">
+        <h1 class="thank-you-title">{% trans "Спасибо большое за запись" %}!</h1>
+        <p class="thank-you-message">{% trans "Запись успешно назначена!" %}</p>
+
+        <p class="appointment-details-title">{% trans "Детали записи" %}:</p>
+        <ul class="appointment-details">
+            <li>{% trans 'Услуга' %}: {{ appointment.get_service_name }}</li>
+            <li>{% trans 'Дата встречи' %}: {{ appointment.get_appointment_date }}</li>
+            <li>{% trans 'Время встречи' %}: {{ appointment.get_start_time }}</li>
+            <li>{% trans 'Продолжительность' %}: {{ appointment.get_service_duration }}</li>
+        </ul>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-dismissible {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block customJS %}
+<script src="{% static 'js/js-utils.js' %}"></script>
+{% endblock %}

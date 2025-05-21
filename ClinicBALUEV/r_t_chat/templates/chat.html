@@ -1,0 +1,92 @@
+{% extends 'mainController/layout.html'%}
+{% load i18n %}
+{% load static %}
+{% block title %} Чат {% endblock %}
+
+{% block customCSS %}
+<style>
+    .chat-card {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .chat-header {
+        background: linear-gradient(135deg, #0084FF, #005FCC);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .chat-header h1 {
+        margin: 0;
+        font-size: 1.6rem;
+    }
+
+    #chat_container {
+        height: 400px;
+        overflow-y: auto;
+        background-color: #f9f9f9;
+        padding: 15px;
+    }
+
+    .card-footer {
+        background-color: #ffffff;
+        border-top: 1px solid #dee2e6;
+        padding: 15px;
+    }
+
+    form#chat_message_form textarea,
+    form#chat_message_form input {
+        border-radius: 10px !important;
+    }
+    body {
+        background-color: #DFFAFF;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="card chat-card">
+        <div class="chat-header">
+            <div id="online_status"></div>
+            <h1>Чат с {{ other_user.get_full_name }}</h1>
+        </div>
+        <div id="chat_container" class="card-body">
+            <ul id="chat_messages" class="list-unstyled">
+                {% for message in chat_messages %}
+                    {% include 'partials/chat_message.html' %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="card-footer">
+            <form id="chat_message_form"
+                  hx-ext="ws"
+                  ws-connect="/ws/chat/{{ chatroom_name }}/"
+                  ws-send="this">
+                {% csrf_token %}
+                {{ form }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script>
+    function scrollToBottom(time = 0) {
+        setTimeout(function () {
+            const container = document.getElementById('chat_container');
+            container.scrollTop = container.scrollHeight;
+        }, time);
+    }
+
+    scrollToBottom();
+
+    document.getElementById("chat_message_form").addEventListener("htmx:wsAfterSend", function () {
+        this.reset();
+    });
+</script>
+{% endblock %}

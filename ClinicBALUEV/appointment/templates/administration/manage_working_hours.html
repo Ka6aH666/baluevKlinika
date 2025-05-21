@@ -1,0 +1,382 @@
+{% extends 'mainController/layout.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %} Управление рабочими часами {% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css"
+      integrity="sha512-3JRrEUwaCkFUBLK1N8HehwQgu8e23jTH4np5NHOmQOobuC4ROQxFwFgBLTnhcnQRMs84muMh0PnnwXlPq5MGjg=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<style>
+body {
+    background: #E6F0FA;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.content-wrapper {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 0 15px;
+}
+
+.working-hours-form-wrapper {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.working-hours-form-wrapper:hover {
+    transform: translateY(-5px);
+}
+
+.wh-form-content {
+    padding: 1.5rem;
+}
+
+h2 {
+    color: #2c3e50;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h2 i {
+    margin-right: 0.5rem;
+    color: #3498db;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #34495e;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.form-group label i {
+    margin-right: 0.5rem;
+    color: #3498db;
+}
+
+.form-control, select {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    width: 100%;
+}
+
+.form-control:focus, select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+    outline: none;
+    background: #fff;
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group-text {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem;
+}
+
+.datetimepicker-input {
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #2980b9, #3498db);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.btn-primary i {
+    margin-right: 0.5rem;
+}
+
+.alert {
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    position: relative;
+    animation: slideIn 0.5s ease;
+}
+
+.alert-dismissible {
+    padding-right: 3rem;
+}
+
+.alert-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.alert-danger {
+    background: #fce8e6;
+    color: #c0392b;
+    border: 1px solid #f5c6cb;
+}
+
+.btn-close {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 576px) {
+    .working-hours-form-wrapper {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .wh-form-content {
+        padding: 1rem;
+    }
+}
+    body {
+        background-color: #E6F0FA;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<section class="content content-wrapper">
+    <div class="working-hours-form-wrapper">
+        <div class="wh-form-content">
+            <h2><i class="fas fa-clock"></i> {% trans "Управление рабочим временем" %}</h2>
+            <form method="post" action="" id="workingHoursForm"
+                  data-action="{% if working_hours_instance %}update{% else %}create{% endif %}"
+                  data-working-hours-id="{% if working_hours_instance %}{{ working_hours_instance.id }}{% else %}0{% endif %}"
+                  data-staff-user-id="{% if staff_user_id %}{{ staff_user_id }}{% else %}0{% endif %}">
+                {% csrf_token %}
+
+                {% if working_hours_form.staff_member %}
+                <div class="form-group">
+                    <label for="{{ working_hours_form.staff_member.id_for_label }}"><i class="fas fa-user"></i> {% trans 'Staff Member' %}:</label>
+                    {{ working_hours_form.staff_member }}
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="{{ working_hours_form.day_of_week.id_for_label }}"><i class="fas fa-calendar-day"></i> {% trans 'День недели' %}:</label>
+                    {{ working_hours_form.day_of_week }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ working_hours_form.start_time.id_for_label }}"><i class="fas fa-hourglass-start"></i> {% trans 'Время начала' %}:</label>
+                    <div class="input-group date" id="start-timepicker" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker"
+                               data-target="#start-timepicker" name="{{ working_hours_form.start_time.name }}"
+                               value="{{ working_hours_form.start_time.value|default:'09:00' }}"
+                               id="{{ working_hours_form.start_time.id_for_label }}">
+                        <div class="input-group-append" data-toggle="datetimepicker" data-target="#start-timepicker">
+                            <div class="input-group-text"><i class="far fa-clock"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ working_hours_form.end_time.id_for_label }}"><i class="fas fa-hourglass-end"></i> {% trans 'Время окончания' %}:</label>
+                    <div class="input-group date" id="end-timepicker" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker"
+                               data-target="#end-timepicker" name="{{ working_hours_form.end_time.name }}"
+                               value="{{ working_hours_form.end_time.value|default:'18:00' }}"
+                               id="{{ working_hours_form.end_time.id_for_label }}">
+                        <div class="input-group-append" data-toggle="datetimepicker" data-target="#end-timepicker">
+                            <div class="input-group-text"><i class="far fa-clock"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> {{ button_text }}</button>
+                <input type="hidden" id="addWorkingHoursUrl"
+                       value="{% url 'add_working_hours' staff_user_id|default:user.id %}">
+                <input type="hidden" id="updateWorkingHoursUrl"
+                       value="{% url 'update_working_hours' working_hours_id|default:0 %}">
+            </form>
+
+            <div class="messages">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-dismissible {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %}"
+                     role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block customJS %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
+        integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.min.js"
+        integrity="sha512-7rusk8kGPFynZWu26OKbTeI+QPoYchtxsmPeBqkHIEXJxeun4yJ4ISYe7C6sz9wdxeE1Gk3VxsIWgCZTc+vX3g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.js"
+        integrity="sha512-3CuraBvy05nIgcoXjVN33mACRyI89ydVHg7y/HMN9wcTVbHeur0SeBzweSd/rxySapO7Tmfu68+JlKkLTnDFNg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/locale/ru.js"
+        integrity="sha512-NG7V7xfM7IAB6wfCflWAH4AkzLoXzh8l5Z+/tTuvf0YcT0h7W3j1T8R4JBDC0rJlyfQ4vjiR2FR7l3T0o5tpmQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"
+        integrity="sha512-k6/Bkb8Fxf/c1Tkyl39yJwcOZ1P4cRrJu77p83zJjN2Z55prbFHxPs9vN7q3l3+tSMGPDdoH51AEU8Vgo1cgAA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+const addWorkingHoursUrl = $('#addWorkingHoursUrl').val();
+const updateWorkingHoursUrl = $('#updateWorkingHoursUrl').val();
+
+$(function () {
+    const startTimeInput = $('#start-timepicker input');
+    const endTimeInput = $('#end-timepicker input');
+    const startTimePicker = $('#start-timepicker');
+    const endTimePicker = $('#end-timepicker');
+
+    const defaultStartTime = startTimeInput.val() ? moment(startTimeInput.val(), 'HH:mm') : moment().hour(9).minute(0);
+    const defaultEndTime = endTimeInput.val() ? moment(endTimeInput.val(), 'HH:mm') : moment().hour(18).minute(0);
+
+    startTimePicker.datetimepicker({
+        format: 'HH:mm',
+        icons: {
+            time: 'far fa-clock',
+            date: 'far fa-calendar',
+            up: 'fas fa-chevron-up',
+            down: 'fas fa-chevron-down',
+            previous: 'fas fa-chevron-left',
+            next: 'fas fa-chevron-right',
+            today: 'fas fa-calendar-check',
+            clear: 'fas fa-trash',
+            close: 'fas fa-times'
+        },
+        stepping: 15,
+        pick12HourFormat: false,
+        pickSeconds: false,
+        defaultDate: defaultStartTime,
+        locale: 'ru'
+    });
+
+    endTimePicker.datetimepicker({
+        format: 'HH:mm',
+        icons: {
+            time: 'far fa-clock',
+            date: 'far fa-calendar',
+            up: 'fas fa-chevron-up',
+            down: 'fas fa-chevron-down',
+            previous: 'fas fa-chevron-left',
+            next: 'fas fa-chevron-right',
+            today: 'fas fa-calendar-check',
+            clear: 'fas fa-trash',
+            close: 'fas fa-times'
+        },
+        stepping: 15,
+        pick12HourFormat: false,
+        pickSeconds: false,
+        defaultDate: defaultEndTime,
+        locale: 'ru'
+    });
+
+    startTimePicker.on('change.datetimepicker', function (e) {
+        if (e.date) {
+            startTimeInput.val(e.date.format('HH:mm'));
+            // Устанавливаем минимальное время для endTimePicker
+            endTimePicker.datetimepicker('minDate', e.date);
+        }
+    });
+
+    endTimePicker.on('change.datetimepicker', function (e) {
+        if (e.date) {
+            endTimeInput.val(e.date.format('HH:mm'));
+            // Устанавливаем максимальное время для startTimePicker
+            startTimePicker.datetimepicker('maxDate', e.date);
+        }
+    });
+
+    // Валидация перед отправкой
+    $('#workingHoursForm').on('submit', function (e) {
+        e.preventDefault();
+        const startTime = moment(startTimeInput.val(), 'HH:mm');
+        const endTime = moment(endTimeInput.val(), 'HH:mm');
+
+        if (endTime.isSameOrBefore(startTime)) {
+            showErrorModal('Время окончания должно быть позже времени начала.');
+            return;
+        }
+
+        const form = $(this);
+        const action = form.data('action');
+        let postUrl = action === 'create' ? addWorkingHoursUrl : updateWorkingHoursUrl;
+
+        $.ajax({
+            url: postUrl,
+            type: 'POST',
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    window.location.href = response.redirect_url;
+                } else {
+                    showErrorModal(response.message || 'Ошибка при сохранении.');
+                }
+            },
+            error: function (error) {
+                showErrorModal(error.responseJSON?.message || 'Ошибка при отправке.');
+            }
+        });
+    });
+});
+</script>
+<script src="{% static 'js/modal/error_modal.js' %}"></script>
+<script src="{% static 'js/js-utils.js' %}"></script>
+{% endblock %}

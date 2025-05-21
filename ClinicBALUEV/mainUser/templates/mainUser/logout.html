@@ -1,0 +1,69 @@
+{% extends 'mainController/layout.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block customCSS %}
+    <style>
+        .logout-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            background: linear-gradient(135deg, #DFFAFF 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logout-message {
+            font-size: 2rem;
+            color: #2c3e50;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logout-button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .logout-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .logout-message {
+                font-size: 1.5rem;
+            }
+            .logout-button {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+        body {
+        background-color: #DFFAFF;
+    }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="logout-container">
+        <h1 class="logout-message">{% trans "Вы успешно вышли из системы." %}</h1>
+        <a href="{% url 'home' %}" class="logout-button">{% trans "Вернуться на главную" %}</a>
+    </div>
+{% endblock %}

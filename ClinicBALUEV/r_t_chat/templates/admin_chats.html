@@ -1,0 +1,155 @@
+{% extends 'mainController/layout.html' %}
+{% load static %}
+{% block title %} Админ-панель чатов {% endblock %}
+
+{% block customCSS %}
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+    .admin-chat-panel {
+        max-width: 900px;
+        margin: 30px auto;
+        font-family: 'Roboto', sans-serif;
+    }
+    .panel-header {
+        background: #0084FF;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .panel-header h4 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    .search-bar {
+        margin: 20px 0;
+        position: relative;
+    }
+    .search-bar input {
+        width: 100%;
+        padding: 10px 40px 10px 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+    .search-bar i {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    .chat-list {
+        background: #ffffff;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    .chat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid #f1f1f1;
+        transition: background 0.2s;
+    }
+    .chat-item:hover {
+        background: #f8f9fa;
+    }
+    .chat-item a {
+        color: #007bff;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+    .chat-item a:hover {
+        color: #0056b3;
+    }
+    .chat-item .user-icon {
+        margin-right: 10px;
+        color: #6c757d;
+    }
+    .chat-item .status {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    .chat-item .status.online::before {
+        content: '';
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #28a745;
+        margin-right: 5px;
+    }
+    .no-chats {
+        text-align: center;
+        padding: 20px;
+        color: #6c757d;
+    }
+    @media (max-width: 576px) {
+        .admin-chat-panel {
+            margin: 15px;
+        }
+        .panel-header h4 {
+            font-size: 1.2rem;
+        }
+        .chat-item {
+            padding: 10px 15px;
+        }
+        .chat-item a {
+            font-size: 0.9rem;
+        }
+    }
+    body {
+        background-color: #DFFAFF;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="admin-chat-panel">
+    <div class="panel-header">
+        <h4>Админ-панель всех чатов</h4>
+    </div>
+    <div class="search-bar">
+        <input type="text" id="search-chats" placeholder="Поиск по имени пользователя...">
+        <i class="fa-solid fa-magnifying-glass"></i>
+    </div>
+    <div class="chat-list">
+        {% for chat in chat_groups %}
+            {% for member in chat.members.all %}
+                {% if member != user %}
+                    <div class="chat-item">
+                        <a href="{% url 'chatroom' chat.group_name %}">
+                            <i class="fa-solid fa-user user-icon"></i>
+                            {{ member.get_full_name }}
+                        </a>
+                        <span class="status {% if member.is_online|default:False %}online{% else %}offline{% endif %}">
+                            {% if member.is_online|default:False %}Онлайн{% else %}Оффлайн{% endif %}
+                        </span>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% empty %}
+            <div class="no-chats">Чаты не найдены</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script>
+    // Поиск по чатам
+    document.getElementById('search-chats').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const chatItems = document.querySelectorAll('.chat-item');
+        chatItems.forEach(item => {
+            const name = item.querySelector('a').textContent.toLowerCase();
+            item.style.display = name.includes(searchTerm) ? 'flex' : 'none';
+        });
+    });
+</script>
+{% endblock %}

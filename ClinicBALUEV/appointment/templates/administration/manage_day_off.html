@@ -1,0 +1,285 @@
+{% extends 'mainController/layout.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %} Управление выходными {% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>
+    body {
+        background-color: #DFFAFF;
+    }
+.days-off-form-wrapper {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.do-form-content {
+    padding: 1.5rem;
+}
+
+h2 {
+    color: #2c3e50;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #34495e;
+    font-weight: 500;
+}
+
+.form-control {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+    outline: none;
+    background: #fff;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #2980b9, #3498db);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(45deg, #c0392b, #e74c3c);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.datepicker-display {
+    cursor: pointer;
+    background: #f8f9fa url('{% static "icons/calendar.png" %}') no-repeat right 10px center;
+    background-size: 20px;
+}
+
+.alert {
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.alert-danger {
+    background: #fce8e6;
+    color: #c0392b;
+    border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 576px) {
+    .days-off-form-wrapper {
+        margin: 1rem;
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<section class="content content-wrapper">
+    <div class="days-off-form-wrapper">
+        <div class="do-form-content">
+            <h2><i class="bi bi-calendar-week me-2"></i>Управление выходными</h2>
+
+            <form method="post" action="" id="main-day-off-form">
+                {% csrf_token %}
+
+                {% if error_message %}
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            showErrorModal("{{ error_message }}");
+                        });
+                    </script>
+                {% endif %}
+
+                {% if days_off_form.staff_member %}
+                <div class="form-group">
+                    <label for="{{ days_off_form.staff_member.id_for_label }}"><i class="bi bi-person me-2"></i>{% trans 'Staff Member' %}:</label>
+                    {{ days_off_form.staff_member }}
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="{{ day_off_form.start_date.id_for_label }}_display"><i class="bi bi-calendar-event me-2"></i>{% trans 'Start date' %}:</label>
+                    <input type="text" id="{{ day_off_form.start_date.id_for_label }}_display"
+                           class="form-control datepicker-display"
+                           value="{{ day_off_form.start_date.value|default:today|date:'M. d, Y' }}" readonly>
+                    <input type="hidden" id="{{ day_off_form.start_date.id_for_label }}"
+                           name="{{ day_off_form.start_date.name }}" class="datepicker-actual"
+                           value="{{ day_off_form.start_date.value|default:today|date:'Y-m-d' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ day_off_form.end_date.id_for_label }}_display"><i class="bi bi-calendar-event-fill me-2"></i>{% trans 'End date' %}:</label>
+                    <input type="text" id="{{ day_off_form.end_date.id_for_label }}_display"
+                           class="form-control datepicker-display"
+                           value="{{ day_off_form.end_date.value|default:today|date:'M. d, Y' }}" readonly>
+                    <input type="hidden" id="{{ day_off_form.end_date.id_for_label }}"
+                           name="{{ day_off_form.end_date.name }}" class="datepicker-actual"
+                           value="{{ day_off_form.end_date.value|default:today|date:'Y-m-d' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ day_off_form.description.id_for_label }}"><i class="bi bi-chat-square-text me-2"></i>{% trans 'Description' %}:</label>
+                    <input type="text" id="{{ day_off_form.description.id_for_label }}"
+                           name="{{ day_off_form.description.name }}"
+                           value="{{ day_off_form.description.value|default:'Отпуск'}}"
+                           class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-check-circle me-2"></i>{{ button_text }}
+                </button>
+            </form>
+
+            {% if object_id %}
+            <form method="post" action="{% url 'delete_day_off' object_id %}" class="mt-3 no-ajax">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger w-100" onclick="return confirm('{% trans 'Are you sure you want to delete this record?' %}');">
+                    <i class="bi bi-trash me-2"></i> {% trans 'Delete' %}
+                </button>
+            </form>
+            {% endif %}
+
+            <div class="row-form-errors mt-3">
+                {% if day_off_form.errors %}
+                <div class="alert alert-danger">
+                    {{ day_off_form.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="messages mt-3">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            {% include 'modal/error_modal.html' %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block customJS %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/i18n/jquery-ui-i18n.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    function updateHiddenField(displayElement, hiddenElement) {
+        const displayedDate = displayElement.val();
+        if (displayedDate) {
+            try {
+                const parsedDate = $.datepicker.parseDate('M. dd, yy', displayedDate);
+                hiddenElement.val($.datepicker.formatDate('yy-mm-dd', parsedDate));
+            } catch (e) {
+                console.error('Date parsing error:', e);
+            }
+        }
+    }
+
+    $.datepicker.setDefaults({
+        ...$.datepicker.regional["ru"],
+        showAnim: 'fadeIn',
+        showOptions: { duration: 300 }
+    });
+
+    $("#id_start_date_display, #id_end_date_display").datepicker({
+        dateFormat: 'M. dd, yy',
+        minDate: 0,
+        showButtonPanel: true,
+        onSelect: function () {
+            const hiddenElementId = $(this).attr('id').replace('_display', '');
+            updateHiddenField($(this), $('#' + hiddenElementId));
+        }
+    });
+
+    // Инициализация значений при загрузке
+    updateHiddenField($("#id_start_date_display"), $("#id_start_date"));
+    updateHiddenField($("#id_end_date_display"), $("#id_end_date"));
+
+    // Валидация дат
+    $("#id_end_date_display").datepicker("option", "onSelect", function(selectedDate) {
+        const startDate = $("#id_start_date_display").datepicker("getDate");
+        const endDate = $.datepicker.parseDate('M. dd, yy', selectedDate);
+        if (startDate && endDate < startDate) {
+            alert("Дата окончания не может быть раньше даты начала");
+            $(this).val($("#id_start_date_display").val());
+            updateHiddenField($(this), $("#id_end_date"));
+        }
+        updateHiddenField($(this), $("#id_end_date"));
+    });
+});
+
+$('#main-day-off-form').on('submit', function (event) {
+    event.preventDefault();
+    const formData = $(this).serialize();
+    $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        success: function (response) {
+            if (response.success) {
+                window.location.href = response.redirect_url;
+            } else {
+                showErrorModal(response.message || "Ошибка сохранения.");
+            }
+        },
+        error: function (error) {
+            showErrorModal(error.responseJSON?.message || "Ошибка при отправке.");
+        }
+    });
+});
+</script>
+
+<script src="{% static 'js/modal/error_modal.js' %}"></script>
+<script src="{% static 'js/js-utils.js' %}"></script>
+{% endblock %}

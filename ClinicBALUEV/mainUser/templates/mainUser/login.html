@@ -1,0 +1,102 @@
+{% extends 'mainController/layout.html' %}
+{% load static %}
+
+{% block body %}
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #d0f0fd;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .login-container {
+        position: relative;
+        width: 400px;
+        height: 460px;
+        background: #eee;
+        border-radius: 60% / 10%;
+        transform: translateY(-50px);
+        transition: 0.8s ease-in-out;
+        padding: 40px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    }
+
+    .login-container:hover {
+        border-radius: 10% / 60%;
+        transform: translateY(0);
+    }
+
+    .login-container h2 {
+        text-align: center;
+        color: #4682B4;
+        margin-bottom: 20px;
+    }
+
+    .login-container label {
+        display: block;
+        margin-top: 10px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .login-container input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .login-container button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #4682B4;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+
+    .login-container button:hover {
+        background-color: #77DD77;
+    }
+
+    .login-container p {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .login-container a {
+        color: #4682B4;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .alert {
+        margin-top: 10px;
+    }
+</style>
+
+<div class="login-container">
+    <form method="POST">
+        {% csrf_token %}
+        <h2>Вход</h2>
+        {{ form }}
+        <button type="submit">Войти</button>
+    </form>
+    <p>Нет аккаунта? <a href="{% url 'registration' %}">Регистрация</a></p>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

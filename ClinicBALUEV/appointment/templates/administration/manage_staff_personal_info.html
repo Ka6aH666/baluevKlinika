@@ -1,0 +1,205 @@
+{% extends 'mainController/layout.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %} Управление профилем {% endblock %}
+{% block customCSS %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/app_admin/staff_member.css' %}"/>
+{% endblock %}
+
+{% block body %}
+<style>
+    body {
+        background-color: #DFFAFF;
+    }
+
+    .content-wrapper {
+        max-width: 1400px;
+        margin: 3rem auto;
+        padding: 0 15px;
+    }
+
+    .staff-form-wrapper {
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .staff-form-wrapper:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .staff-form-content h3 {
+        color: #333;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 0.75rem;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #0084FF;
+        box-shadow: 0 0 8px rgba(0, 132, 255, 0.2);
+        outline: none;
+    }
+
+    .btn-primary {
+        background-color: #0084FF;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 500;
+        width: 100%;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary:hover {
+        background-color: #0066CC;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.3s ease;
+    }
+
+    .btn-primary:hover::before {
+        left: 0;
+    }
+
+    .alert {
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        position: relative;
+        animation: slideIn 0.5s ease;
+    }
+
+    .alert-dismissible .btn-close {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .content-wrapper {
+            margin: 1.5rem auto;
+        }
+
+        .staff-form-wrapper {
+            padding: 1.5rem;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+        }
+    }
+</style>
+
+<section class="content content-wrapper">
+    <div class="staff-form-wrapper fade-in">
+        <div class="staff-form-content">
+            <h3>{% trans 'Персональная информация' %}</h3>
+            <form id="updatePersonalInfoForm" method="post" action="">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.first_name.label }}
+                    {{ form.first_name }}
+
+                </div>
+                <div class="form-group">
+                    {{ form.last_name.label }}
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email }}
+                </div>
+                <button type="submit" class="btn btn-primary">{{ btn_text }}</button>
+            </form>
+            <div class="messages">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-dismissible {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %}" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block customJS %}
+<script src="{% static 'js/js-utils.js' %}"></script>
+<script>
+    // Анимация при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+        const formWrapper = document.querySelector('.staff-form-wrapper');
+        formWrapper.style.opacity = '0';
+        setTimeout(() => {
+            formWrapper.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            formWrapper.style.opacity = '1';
+            formWrapper.style.transform = 'translateY(0)';
+        }, 100);
+    });
+</script>
+{% endblock %}

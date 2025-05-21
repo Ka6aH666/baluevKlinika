@@ -1,0 +1,177 @@
+    {% extends 'mainController/layout.html' %}
+    {% load i18n %}
+    {% load static %}
+    {% block title %} Услуги {% endblock %}
+
+    {% block customCSS %}
+    <style>
+        body {
+            background-color: #f0f8ff;
+        }
+
+        .service-container {
+            padding: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: #0e2238;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .section-header .btn-menu a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .responsive-table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        thead {
+            background-color: #0084FF;
+            color: white;
+        }
+
+        tbody tr:hover {
+            background-color: #f1faff;
+        }
+
+        .buttons-container .btn {
+            margin: 0.25rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .buttons-container .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-menu {
+            background-color: #0084FF;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-menu:hover {
+            background-color: #2A3435;
+        }
+
+        .btn-edit {
+            background-color: #28A745;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .btn-edit:hover {
+            background-color: #218838;
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .section-header h2 {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+    {% endblock %}
+
+    {% block body %}
+    <section class="content content-wrapper">
+        <div class="service-container">
+            <section class="profile-section">
+                <div class="section-header">
+                    <button class="btn btn-menu">
+                        <a href="{% url 'show_all' %}">Меню</a>
+                    </button>
+                    <h2>{% trans 'Перечень предоставляемых услуг' %}</h2>
+                </div>
+
+                <div class="responsive-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>{% trans 'Имя' %}</th>
+                                <th>{% trans 'Продолжительность' %}</th>
+                                <th>{% trans 'Цена' %}</th>
+                                <th>{% trans 'Детали' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in services %}
+                            <tr>
+                                <td>{{ service.id }}</td>
+                                <td>{{ service.name }}</td>
+                                <td>{{ service.get_duration }}</td>
+                                <td>{{ service.get_price }}</td>
+                                <td>
+                                    <div class="buttons-container">
+                                        {% if user.is_superuser %}
+                                        <a href="{% url 'update_service' service_id=service.id %}" class="btn btn-edit">{% trans 'Редактировать' %}</a>
+                                        <a href="{% url 'delete_service' service_id=service.id %}" class="btn btn-danger">{% trans 'Удалить' %}</a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">{% trans 'Услуги не добавлены' %}.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            {% if messages %}
+            <div class="messages mt-3">
+                {% for message in messages %}
+                <div class="alert alert-dismissible {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %}" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    {% endblock %}

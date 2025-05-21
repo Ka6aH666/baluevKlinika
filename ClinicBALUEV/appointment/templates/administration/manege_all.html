@@ -1,0 +1,147 @@
+{% extends 'mainController/layout.html' %}
+{% block title %} Администрирование {% endblock %}
+{% block body %}
+<style>
+    .admin-wrapper {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 15px;
+    }
+
+    .admin-section {
+        margin-bottom: 2rem;
+        background: #fff;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .admin-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .admin-section h2 {
+        color: #333;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+    }
+
+    .btn-custom {
+        margin: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        background-color: #0084FF;
+        color: #fff;
+        border: none;
+    }
+
+    .btn-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        background-color: #0066CC;
+    }
+
+    .btn-custom::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.3s ease;
+    }
+
+    .btn-custom:hover::before {
+        left: 0;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-section {
+            padding: 1.5rem;
+        }
+
+        .btn-custom {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+    }
+    body {
+        background-color: #DFFAFF;
+    }
+</style>
+
+<div class="admin-wrapper">
+    <div class="admin-section fade-in">
+        <h2>Услуги</h2>
+        <div class="d-flex flex-wrap">
+            <a href="{% url 'add_service' %}" class="icon-link">
+                <button class="btn btn-custom">Добавить услугу</button>
+            </a>
+            <a href="{% url 'get_service_list' %}" class="icon-link">
+                <button class="btn btn-custom">Список услуг</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="admin-section fade-in" style="animation-delay: 0.2s;">
+        <h2>Работники</h2>
+        <div class="d-flex flex-wrap">
+            <a href="{% url 'add_staff_member_info' %}" class="icon-link">
+                <button class="btn btn-custom">Добавить работника</button>
+            </a>
+            <a href="{% url 'get_staff_list' %}" class="icon-link">
+                <button class="btn btn-custom">Список работников</button>
+            </a>
+            <a href="{% url 'get_specialization_list' %}" class="icon-link">
+                <button class="btn btn-custom">Список специализации</button>
+            </a>
+            <a href="{% url 'add_specialization' %}" class="icon-link">
+                <button class="btn btn-custom">Добавить специализацию</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="admin-section fade-in" style="animation-delay: 0.4s;">
+        <h2>Записи</h2>
+        <div class="d-flex flex-wrap">
+            <a href="{% url 'get_user_appointments' %}" class="icon-link">
+                <button class="btn btn-custom">Календарь записей</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Добавление анимации при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+        const sections = document.querySelectorAll('.admin-section');
+        sections.forEach((section, index) => {
+            setTimeout(() => {
+                section.classList.add('fade-in');
+            }, index * 200);
+        });
+    });
+</script>
+{% endblock %}

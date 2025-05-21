@@ -1,0 +1,98 @@
+{% extends 'mainController/layout.html' %}
+{% load static %}
+{% block title %} Услуги {% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .btn-primary {
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .btn-primary:hover {
+        background-color: #2563eb;
+        transform: scale(1.05);
+    }
+    .badge {
+        transition: transform 0.2s ease;
+    }
+    .badge:hover {
+        transform: scale(1.1);
+    }
+    .alert {
+        animation: slideIn 0.5s ease;
+    }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    body {
+        background-color: #DFFAFF;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-dismissible {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} bg-gray-100 border border-gray-300 rounded-lg p-4 mb-4 shadow-md" role="alert">
+        {{ message }}
+        <button type="button" class="close text-gray-500 hover:text-gray-700" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center" data-aos="fade-down">Наши врачи <span class="badge bg-blue-600 text-white px-3 py-1 rounded-full">{{ staffMembers|length }}</span></h3>
+
+    <section class="doctors-section py-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for staffM in staffMembers %}
+            <div class="card bg-white rounded-xl overflow-hidden shadow-lg" data-aos="fade-up" data-aos-delay="{% cycle '100' '200' '300' '400' %}">
+                <div class="p-6 text-center flex flex-col h-full">
+                    <img src="{{ staffM.get_image_url }}" class="rounded-full mb-4 mx-auto object-cover w-24 h-24 border-4 border-blue-100" alt="{{ staffM.get_staff_member_name }}">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ staffM.get_staff_member_name }}</h3>
+                    <div class="flex flex-wrap gap-2 justify-center mb-3">
+                        {% if staffM.specializations.all %}
+                            {% for spec in staffM.specializations.all %}
+                                <span class="badge bg-gray-600 text-white text-sm px-3 py-1 rounded-full">{{ spec.name }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="badge bg-gray-600 text-white text-sm px-3 py-1 rounded-full">Специалист</span>
+                        {% endif %}
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4 flex-grow">
+                        {% if staffM.specializations.all %}
+                            {% for spec in staffM.specializations.all %}
+                                {{ spec.description|truncatechars:100 }}
+                                {% if not forloop.last %}<br>{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            Опытный специалист в своей области.
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'appointment_request' staffM.id %}" class="btn-primary bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 mt-auto">Записаться</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: true,
+    });
+</script>
+{% endblock %}

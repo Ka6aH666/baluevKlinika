@@ -1,0 +1,179 @@
+{% extends 'mainController/layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<style>
+    body {
+        background-color: #DFFAFF;
+    }
+
+    .user-media {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .user-info {
+        background: linear-gradient(135deg, #0084FF, #005FCC);
+        color: white;
+        padding: 20px;
+        border-radius: 16px 16px 0 0;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-info h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .media-body {
+        background: white;
+        border-radius: 0 0 16px 16px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .media-body h2 {
+        text-align: center;
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 20px;
+        background: #f9f9f9;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .appointment-card {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .appointment-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .appointment-card h4 {
+        color: #0084FF;
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .appointment-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+    }
+
+    .appointment-detail {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: 8px;
+        background: #f9f9f9;
+        transition: background 0.3s ease;
+    }
+
+    .appointment-detail:hover {
+        background: #e6f0ff;
+    }
+
+    .appointment-detail i {
+        margin-right: 10px;
+        color: #0084FF;
+        font-size: 1.2rem;
+    }
+
+    .appointment-detail strong {
+        color: #333;
+        font-weight: 600;
+        margin-right: 5px;
+    }
+
+    .appointment-detail span {
+        color: #666;
+    }
+
+    hr {
+        border: 0;
+        height: 1px;
+        background: #dee2e6;
+        margin: 20px 0;
+    }
+
+    @media (max-width: 768px) {
+        .user-media {
+            padding: 15px;
+        }
+
+        .user-info h1 {
+            font-size: 1.5rem;
+        }
+
+        .media-body h2 {
+            font-size: 1.3rem;
+        }
+
+        .appointment-card {
+            max-width: 100%;
+        }
+
+        .appointment-details {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="user-media">
+    <div class="user-info">
+        <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+    </div>
+    <div class="media-body">
+        <h2>Ваши записи</h2>
+        {% for appointment in appointments %}
+        <div class="appointment-card">
+            <h4>{{ appointment.get_service_name }}</h4>
+            <div class="appointment-details">
+                <div class="appointment-detail">
+                    <i class="fas fa-calendar-alt"></i>
+                    <strong>Дата:</strong> <span>{{ appointment.get_appointment_date|date:"F d, Y" }}</span>
+                </div>
+                <div class="appointment-detail">
+                    <i class="fas fa-clock"></i>
+                    <strong>Начало приёма:</strong> <span>{{ appointment.get_start_time|time:"H:i" }}</span>
+                </div>
+                <div class="appointment-detail">
+                    <i class="fas fa-hands-helping"></i>
+                    <strong>Услуга:</strong> <span>{{ appointment.get_service_name }}</span>
+                </div>
+                <div class="appointment-detail">
+                    <i class="fas fa-clock"></i>
+                    <strong>Конец приема:</strong> <span>{{ appointment.get_end_time|time:"H:i" }}</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <h2>Записей не найдено</h2>
+        <hr>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

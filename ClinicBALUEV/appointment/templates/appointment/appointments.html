@@ -1,0 +1,142 @@
+{% extends 'mainController/layout.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %} Запись {% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<link rel="stylesheet" type="text/css" href="{% static 'css/appt.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'css/appointments.css' %}"/>
+<style>
+    .fc-toolbar-title {
+        font-size: 25px;
+    }
+    .fc-daygrid-day-top {
+        justify-content: center;
+        font-size: 20px !important;
+    }
+    /* Fade-in animation */
+    @keyframes fadeIn {
+        fromlexer: from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+    /* Scale animation for buttons */
+    .btn-animate {
+        transition: transform 0.2s ease-in-out;
+    }
+    .btn-animate:hover {
+        transform: scale(1.05);
+    }
+    /* Smooth transition for slot list items */
+    .slot-item {
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .slot-item:hover {
+        background-color: #f0f9ff;
+        transform: translateX(5px);
+    }
+    body {
+        background-color: #DFFAFF;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="djangoAppt_main-container bg-white rounded-lg shadow-lg p-6 animate-fade-in">
+        <div class="djangoAppt_body-container">
+            <!-- Header -->
+            <h1 class="text-4xl font-bold text-gray-800 mb-6 text-center">BALUEV</h1>
+            <small class="page-description text-gray-600 block mb-4 text-center">
+                Найдите свободную запись и забронируйте её для себя
+            </small>
+            <hr class="border-gray-200 my-4">
+
+            <form method="post" action="{% url 'appointment_request_submit' %}" class="appointment-form space-y-6">
+                {% csrf_token %}
+                <!-- Service Selection -->
+                <div class="staff-members-list animate-fade-in">
+                    <label class="djangoAppt_item-name"><h3 class="text-lg font-semibold text-gray-700">{{ label }}</h3></label>
+                    <select name="service" id="service_celected_id" class="form-control w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">-- Выберите услугу --</option>
+                        {% for service in services %}
+                            <option value="{{ service.id }}">{{ service.name }}-{{service.get_price}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Calendar -->
+                <div class="djangoAppt_appointment-calendar animate-fade-in">
+                    <div class="djangoAppt_appointment-calendar-title-timezone mb-4">
+                        <div class="djangoAppt_title text-xl font-semibold text-gray-700">
+                            Выберите дату
+                        </div>
+                    </div>
+                    <hr class="djangoAppt_second-part border-gray-200 my-4">
+                    <div class="djangoAppt_calendar" id="calendar"></div>
+                </div>
+
+                <!-- Time Slots -->
+                <div class="djangoAppt_slot animate-fade-in">
+                    <div class="djangoAppt_date_chosen hidden">{{ date_chosen }}</div>
+                    <div class="djangoAppt_date_look text-lg font-medium text-gray-700 mb-4">{{ date_look }}</div>
+                    <div class="slot-container">
+                        <div class="error-message text-red-500 mb-2"></div>
+                        <ul id="slot-list" class="djangoAppt_slot-list space-y-2">
+                            <!-- Slot list will be updated dynamically by the AJAX request -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="djangoAppt_service-description-content animate-fade-in">
+                    <p id="service-datetime-chosen" class="service-datetime-chosen hidden">{{ date_chosen }}</p>
+                    <p id="service-datetime-look" class="text-gray-600 mb-4">{{ date_look }}</p>
+                    <button type="submit" class="btn btn-primary btn-submit-appointment btn-animate w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                        Записаться
+                    </button>
+                </div>
+            </form>
+
+            <!-- Messages -->
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-dismissible {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %} bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4 animate-fade-in" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block customJS %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.js" integrity="sha512-3CuraBvy05nIgcoXjVN33mACRyI89ydVHg7y/HMN9wcTVbHeur0SeBzweSd/rxySapO7Tmfu68+JlKkLTnDFNg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.45/moment-timezone-with-data.min.js" integrity="sha512-t/mY3un180WRfsSkWy4Yi0tAxEDGcY2rAEx873hb5BrkvLA0QLk54+SjfYgFBBoCdJDV1H86M8uyZdJhAOHeyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.10/index.global.min.js" integrity="sha512-JCQkxdym6GmQ+AFVioDUq8dWaWN6tbKRhRyHvYZPupQ6DxpXzkW106FXS1ORgo/m3gxtt5lHRMqSdm2OfPajtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    const timezone = "{{ timezoneTxt }}";
+    const locale = "{{ locale }}";
+    const availableSlotsAjaxURL = "{% url 'available_slots_ajax' %}";
+    const requestNextAvailableSlotURLTemplate = "{% url 'request_next_available_slot' service_id=0 %}";
+    const getNonWorkingDaysURL = "{% url 'get_non_working_days_ajax' %}";
+    const getCalenderSettingsForStaff = "{% url 'get_calender_settings_for_staff_ajax' %}";
+    const fetch_service_duration = "{% url 'fetch_service_duration' %}";
+    const serviceId = "{{ service.id }}";
+    const staff_memeber_id = "{{ staff_member.id }}";
+    const rescheduledDate = "{{ rescheduled_date }}";
+    const appointmentRequestId = "{{ ar_id_request }}";
+    const appointmentRequestSubmitURL = "{% url 'appointment_request_submit' %}";
+</script>
+<script>
+    const requestNonAvailableSlotBtnTxt = "{% trans 'Request next available slot' %}";
+    const noStaffMemberSelectedTxt = "{% trans 'No staff member selected.' %}";
+    const selectTimeSlotWarningTxt = "{% trans 'Please select a time slot before submitting the appointment request.' %}";
+    const dateInPastErrorTxt = "{% trans 'Date is in the past.' %}";
+    const selectDateAndTimeAlertTxt = "{% trans 'Please select a date and time' %}";
+</script>
+<script src="{% static 'js/appointments.js' %}"></script>
+<script src="{% static 'js/js-utils.js' %}"></script>
+{% endblock %}

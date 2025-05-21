@@ -1,0 +1,102 @@
+{% extends 'mainController/layout.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %} Управление услугами {% endblock %}
+
+{% block customCSS %}
+<style>
+    body {
+        background: #E8F8FF;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .service-form-wrapper {
+        max-width: 700px;
+        margin: 50px auto;
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 8px 24px rgba(0, 132, 255, 0.2);
+        animation: fadeInUp 0.8s ease-out both;
+    }
+
+    .service-form-content h2 {
+        color: #005FCC;
+        margin-bottom: 20px;
+        font-weight: 600;
+        animation: fadeIn 0.6s ease-in-out;
+    }
+
+    form {
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .btn-animated {
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        font-size: 16px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin-top: 10px;
+    }
+
+    .btn-animated:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    .alert {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<section class="content content-wrapper">
+    <div class="messages">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-dismissible {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %}"
+                     role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="service-form-wrapper">
+        <div class="service-form-content">
+            <h2>{{ page_title }}</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <br>
+                <button type="submit" class="btn btn-animated">{{ btn_text }}</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block customJS %}
+<script src="{% static 'js/js-utils.js' %}"></script>
+{% endblock %}

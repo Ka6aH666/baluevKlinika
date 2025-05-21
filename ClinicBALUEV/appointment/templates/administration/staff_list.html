@@ -1,0 +1,198 @@
+{% extends 'mainController/layout.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %} Работники {% endblock %}
+{% block customCSS %}
+<style>
+    body {
+        background-color: #DFFAFF;
+    }
+
+    .content-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .profile-container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .section-header {
+        background: linear-gradient(135deg, #0084FF, #005FCC);
+        color: white;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .section-header-itm {
+        margin: 0;
+    }
+
+    .buttons-container {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-warning {
+        background-color: #28A745;
+        border-color: #28A745;
+        color: #333;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-warning:hover {
+        background-color: #28A745;
+        border-color: #28A745;
+    }
+
+    .modify-btn.button-color-green {
+        background-color: #28A745;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .modify-btn.button-color-green:hover {
+        background-color: #218838;
+    }
+
+    .responsive-table-container {
+        padding: 20px;
+        background-color: #f9f9f9;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    th {
+        background: linear-gradient(135deg, #0084FF, #005FCC);
+        color: white;
+        font-weight: 600;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .btn-danger {
+        background-color: #DC3545;
+        border-color: #DC3545;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background-color: #C82333;
+        border-color: #C82333;
+    }
+
+    .alert {
+        border-radius: 8px;
+        margin: 10px 20px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .alert-danger {
+        background-color: #F8D7DA;
+        color: #721C24;
+    }
+
+    .alert-success {
+        background-color: #D4EDDA;
+        color: #155724;
+    }
+
+    @media (max-width: 768px) {
+        .section-header {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .responsive-table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            min-width: 600px;
+        }
+    }
+</style>
+{% endblock %}
+{% block body %}
+<section class="content content-wrapper">
+    <div class="profile-container">
+        <section class="profile-section anchor" id="staff_list">
+            <div class="section-header">
+                <button class="btn btn-warning">
+                    <a href="{% url 'show_all' %}">{% trans 'Меню' %}</a>
+                </button>
+                <h2 class="section-header-itm">{% trans 'Работники' %}</h2>
+                <div class="buttons-container section-header-itm">
+                    <a href="{% url 'add_staff_member_info' %}" class="modify-btn button-color-green">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="responsive-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>{% trans 'Имя' %}</th>
+                            <th>{% trans 'Email' %}</th>
+                            <th>{% trans 'Детали' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for staff_member in staff_members %}
+                            <tr>
+                                <td>{{ staff_member.get_staff_member_name }}</td>
+                                <td>{{ staff_member.user.email|default:"Не указано" }}</td>
+                                <td>
+                                    <a href="{% url 'user_profile' staff_member.user.id %}" class="btn btn-warning">{% trans 'Профиль' %}</a>
+                                    <a href="{% url 'remove_staff_member' staff_member.user.id %}" class="btn btn-danger">{% trans 'Remove' %}</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3">{% trans 'Сотрудников не добавлено' %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <div class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-dismissible {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %}" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
